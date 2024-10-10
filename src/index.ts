@@ -22,7 +22,7 @@ router.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello from Book Library API!" });
 });
 
-//TBD: Do I need to keep this variable?
+// TBD: Do we need to keep this variable?
 const booksAPI = new BooksController(router,  new BooksService(booksRepository)).registerRoutes();
 const actionsAPI = new AuditLogController(
   router,
