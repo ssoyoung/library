@@ -18,7 +18,11 @@ This is a simple Book Library API built with Express.js. It allows users to mana
    ```sh
    npm install
    ```
-4. Create a `.env` file in the root directory and add the following:
+4. Build the code:
+   ```sh
+   npm run build
+   ```
+5. Create a `.env` file in the root directory and add the following:
    ```
    PORT=3000
    ```
