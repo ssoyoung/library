@@ -14,6 +14,98 @@ export class BooksController {
   }
 
   public registerRoutes(): void {
+    /**
+     * @swagger
+     * /books:
+     *   get:
+     *     summary: Retrieve a list of books
+     *     description: Get a paginated list of books with optional search and sorting
+     *     parameters:
+     *       - in: query
+     *         name: search
+     *         schema:
+     *           type: string
+     *         description: Search term for books
+     *       - in: query
+     *         name: sort
+     *         schema:
+     *           type: string
+     *           enum: [asc, desc]
+     *         description: Sort order for books
+     *       - in: query
+     *         name: page
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *         description: Page number for pagination
+     *       - in: query
+     *         name: limit
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *         description: Number of books per page
+     *     responses:
+     *       200:
+     *         description: Successful response with paginated books
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/PaginatedBooks'
+     *       400:
+     *         description: Bad request due to invalid parameters
+     *       500:
+     *         description: Internal server error
+     * 
+     * /books/{id}:
+     *   get:
+     *     summary: Get a book by ID
+     *     description: Retrieve a single book by its ID
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: The ID of the book
+     *     responses:
+     *       200:
+     *         description: Successful response with book details
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Book'
+     *       404:
+     *         description: Book not found
+     *       500:
+     *         description: Internal server error
+     * 
+     * components:
+     *   schemas:
+     *     Book:
+     *       type: object
+     *       properties:
+     *         id:
+     *           type: string
+     *         title:
+     *           type: string
+     *         author:
+     *           type: string
+     *         publicationYear:
+     *           type: integer
+     *     PaginatedBooks:
+     *       type: object
+     *       properties:
+     *         books:
+     *           type: array
+     *           items:
+     *             $ref: '#/components/schemas/Book'
+     *         currentPage:
+     *           type: integer
+     *         totalPages:
+     *           type: integer
+     *         totalBooks:
+     *           type: integer
+     */
     this.registerRoute("", this.getBooksHandler.bind(this));
     this.registerRoute("/:id", this.getBookByIdHandler.bind(this));
   }

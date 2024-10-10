@@ -5,13 +5,37 @@ import { AuditLogController, AuditLogRepository } from "./auditLog";
 
 dotenv.config();
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
 const app: Express = express();
 const router = express.Router();
 const port = process.env.PORT || 3000;
 
+// Swagger definition
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Book Library API',
+      version: '1.0.0',
+      description: 'A simple Book Library API',
+    },
+    servers: [
+      {
+        url: `http://localhost:${port}`,
+      },
+    ],
+  },
+  apis: ['./src/**/*.ts'], // Path to the API docs
+};
+
+const specs = swaggerJsdoc(options);
+
 // Middleware
 app.use(express.json());
 app.use("/", router);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 //create Repository
 const booksRepository = new BooksRepository();
