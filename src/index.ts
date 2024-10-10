@@ -1,6 +1,6 @@
-import express, { Express, Request, Response, Router } from "express";
+import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { BooksController, BooksRepository } from "./books";
+import { BooksController, BooksService, BooksRepository } from "./books";
 import { AuditLogController, AuditLogRepository } from "./auditLog";
 
 dotenv.config();
@@ -21,7 +21,9 @@ const auditLogRepository = new AuditLogRepository();
 router.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello from Book Library API!" });
 });
-const booksAPI = new BooksController(router, booksRepository).registerRoutes();
+
+//TBD: Do I need to keep this variable?
+const booksAPI = new BooksController(router,  new BooksService(booksRepository)).registerRoutes();
 const actionsAPI = new AuditLogController(
   router,
   auditLogRepository

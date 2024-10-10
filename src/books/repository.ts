@@ -6,7 +6,7 @@ export interface IBookRepository {
   getBooks(): Promise<Book[]>;
 }
 
-export class BooksRepository {
+export class BooksRepository implements IBookRepository {
   private books: Book[] = [];
 
   constructor() {
