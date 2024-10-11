@@ -1,12 +1,12 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 import { BooksController, BooksService, BooksRepository } from "./books";
 import { AuditLogController, AuditLogRepository } from "./auditLog";
 
 dotenv.config();
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
 
 const app: Express = express();
 const router = express.Router();
@@ -15,11 +15,11 @@ const port = process.env.PORT || 3000;
 // Swagger definition
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Book Library API',
-      version: '1.0.0',
-      description: 'A simple Book Library API',
+      title: "Book Library API",
+      version: "1.0.0",
+      description: "A simple Book Library API",
     },
     servers: [
       {
@@ -27,7 +27,7 @@ const options = {
       },
     ],
   },
-  apis: ['./src/**/*.ts'], // Path to the API docs
+  apis: ["./src/**/*.ts"], // Path to the API docs
 };
 
 const specs = swaggerJsdoc(options);
@@ -35,7 +35,7 @@ const specs = swaggerJsdoc(options);
 // Middleware
 app.use(express.json());
 app.use("/", router);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 //create Repository
 const booksRepository = new BooksRepository();
@@ -46,9 +46,8 @@ router.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello from Book Library API!" });
 });
 
-// TBD: Do we need to keep this variable?
-const booksAPI = new BooksController(router,  new BooksService(booksRepository)).registerRoutes();
-const actionsAPI = new AuditLogController(
+new BooksController(router,  new BooksService(booksRepository)).registerRoutes();
+new AuditLogController(
   router,
   auditLogRepository
 ).registerRoutes();

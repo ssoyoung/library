@@ -2,7 +2,8 @@ import * as booksData from "./books.json";
 import { Book } from "./types";
 
 export interface IBookRepository {
-  getBookById(id: string): Promise<Book | null>;
+    
+  getBookById(_id: string): Promise<Book | null>;
   getBooks(): Promise<Book[]>;
 }
 

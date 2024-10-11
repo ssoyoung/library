@@ -2,7 +2,10 @@ import { IBookRepository } from "./repository";
 import { Book, GetBooksOptions, PaginatedBooks } from "./types";
 
 export class BooksService {
-  constructor(private booksRepository: IBookRepository) {}
+  private booksRepository: IBookRepository;
+  constructor(booksRepository: IBookRepository) {
+    this.booksRepository = booksRepository;
+  }
 
   public async getBooks(options: GetBooksOptions): Promise<PaginatedBooks> {
 
@@ -17,7 +20,7 @@ export class BooksService {
 
     // Sort books by title
     if (options.sort) {
-        books = (options.sort === 'asc') ? books.sort((a,b) => a.title.localeCompare(b.title)): books.sort((a,b) => b.title.localeCompare(a.title))
+        books = (options.sort === "asc") ? books.sort((a,b) => a.title.localeCompare(b.title)): books.sort((a,b) => b.title.localeCompare(a.title));
     }
 
     // Calculate pagination

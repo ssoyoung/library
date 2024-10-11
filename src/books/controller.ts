@@ -6,12 +6,15 @@ import { validatePagination, validateSort } from "./validation";
 // TODO: Make a controller as a common interface,
 // so that BooksController and AuditLogController can reuse it
 export class BooksController {
-  constructor(
-    private router: Router,
-    private booksService: BooksService, //TBD: interface instead of implementation?
-    private basePath: string = "/books"
-  ) {
-  }
+    private router: Router;
+    private booksService: BooksService; //TBD: interface instead of implementation?
+    private basePath: string = "/books";
+  
+    constructor(router: Router, booksService: BooksService, basePath: string = "/books") {
+      this.router = router;
+      this.booksService = booksService;
+      this.basePath = basePath;
+    }
 
   public registerRoutes(): void {
     /**
@@ -109,7 +112,7 @@ export class BooksController {
     this.registerRoute("", this.getBooksHandler.bind(this));
     this.registerRoute("/:id", this.getBookByIdHandler.bind(this));
   }
-  private registerRoute(path: string, handler: (req: Request, res: Response) => Promise<void>): void {
+  private registerRoute(path: string, handler: (_req: Request, _res: Response) => Promise<void>): void {
     this.router.get(`${this.basePath}${path}`, handler);
   }
 

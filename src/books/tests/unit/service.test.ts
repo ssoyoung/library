@@ -1,9 +1,9 @@
-import { BooksService } from '../../service';
-import { BooksRepository } from '../../repository';
-import { Book } from '../../types';
-import * as booksData from '../../books.json';
+import { BooksService } from "../../service";
+import { BooksRepository } from "../../repository";
+import { Book } from "../../types";
+import * as booksData from "../../books.json";
 
-describe('BooksService', () => {
+describe("BooksService", () => {
   let booksService: BooksService;
   let mockBookRepository: jest.Mocked<BooksRepository>;
 
@@ -14,17 +14,17 @@ describe('BooksService', () => {
       getBookById: jest.fn(),
       getBooks: jest.fn(),
       addBook: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<BooksRepository>;
 
     booksService = new BooksService(mockBookRepository);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(booksService).toBeDefined();
   });
 
-  describe('getBooks', () => {
-    it('should return an array of books', async () => {
+  describe("getBooks", () => {
+    it("should return an array of books", async () => {
       const expectedBooks: Book[] = [
         { id: "1", title: "Test Book 1", author: "Test Author 1", publicationYear: 2021 },
         { id: "2", title: "Test Book 2", author: "Test Author 2", publicationYear: 2022 },
@@ -43,10 +43,10 @@ describe('BooksService', () => {
     });
   });
 
-  describe('getBooks with query', () => {
-    it('should filter and sort books based on search query and sort parameter', async () => {
+  describe("getBooks with query", () => {
+    it("should filter and sort books based on search query and sort parameter", async () => {
       const books: Book[] = booksData.books;
-      jest.spyOn(mockBookRepository, 'getBooks').mockResolvedValue(books);
+      jest.spyOn(mockBookRepository, "getBooks").mockResolvedValue(books);
 
       let result = await booksService.getBooks({
         page: 1,
@@ -80,10 +80,10 @@ describe('BooksService', () => {
         totalBooks: 4
       };
       expect(result).toEqual(expectedResult);
-    })
+    });
 
-    it('should return an empty array if no books are found', async () => {
-      jest.spyOn(mockBookRepository, 'getBooks').mockResolvedValue([]);
+    it("should return an empty array if no books are found", async () => {
+      jest.spyOn(mockBookRepository, "getBooks").mockResolvedValue([]);
 
       const result = await booksService.getBooks({
         page: 1,
@@ -101,12 +101,12 @@ describe('BooksService', () => {
     });
   });
 
-  describe('getBookById', () => {
-    it('should return a book by id', async () => {
-      const expectedBook = { id: '1', title: 'Test Book', author: 'Test Author', publicationYear: 2024 };
-      jest.spyOn(mockBookRepository, 'getBookById').mockResolvedValue(expectedBook);
+  describe("getBookById", () => {
+    it("should return a book by id", async () => {
+      const expectedBook = { id: "1", title: "Test Book", author: "Test Author", publicationYear: 2024 };
+      jest.spyOn(mockBookRepository, "getBookById").mockResolvedValue(expectedBook);
 
-      const result = await booksService.getBookById('1');
+      const result = await booksService.getBookById("1");
       expect(result).toEqual(expectedBook);
     });
   });

@@ -12,7 +12,7 @@ export function validatePagination(page: number, limit: number): ValidationResul
   
 export function validateSort(sort: string): ValidationResult {
     sort = sort?.toLowerCase();
-    if (sort !== 'asc' && sort !== 'desc') {
+    if (sort !== "asc" && sort !== "desc") {
         return { isValid: false, error: "Invalid sort value. Allowed values are 'asc' or 'desc'." };
     }
     return { isValid: true };

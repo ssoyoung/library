@@ -53,6 +53,17 @@ This is a simple Book Library API built with Express.js. It allows users to mana
    npm run test:integration
    ```
 
+## Lint
+
+1. Run lint:
+   ```sh
+   npm run lint
+   ```
+2. Run lint and fix:
+   ```sh
+   npm run lint:fix
+   ```
+
 ## License
 
 This project is licensed under the MIT License.
