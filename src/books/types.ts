@@ -1,11 +1,11 @@
+import { Sort } from "../common/types/CommonTypes";
+
 export interface Book {
   id: string;
   title: string;
   author: string;
   publicationYear: number;
 }
-
-export type Sort = "asc" | "desc";
 
 export interface GetBooksOptions {
     search?: string;
@@ -19,9 +19,4 @@ export interface PaginatedBooks {
   currentPage: number;
   totalPages: number;
   totalBooks: number;
-}
-
-export interface ValidationResult {
-    isValid: boolean;
-    error?: string;
 }

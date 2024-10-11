@@ -1,13 +1,17 @@
 import { Request, Response, Router } from "express";
 import { BooksService } from "./service";
-import { PaginatedBooks, Sort, ValidationResult } from "./types";
+import { GetBooksOptions, PaginatedBooks } from "./types";
+import { Sort, ValidationResult } from "../common/types/CommonTypes";
 import { validatePagination, validateSort } from "./validation";
+import { IController } from "../common/interfaces/IController";
 
-// TODO: Make a controller as a common interface,
-// so that BooksController and AuditLogController can reuse it
-export class BooksController {
+const DEFAULT_SORT: Sort = "asc";
+const DEFAULT_PAGE: number = 1;
+const DEFAULT_LIMIT: number = 10;
+
+export class BooksController implements IController {
     private router: Router;
-    private booksService: BooksService; //TBD: interface instead of implementation?
+    private booksService: BooksService;
     private basePath: string = "/books";
   
     constructor(router: Router, booksService: BooksService, basePath: string = "/books") {
@@ -28,25 +32,28 @@ export class BooksController {
      *         name: search
      *         schema:
      *           type: string
-     *         description: Search term for books
+     *         description: (Optional) Search term for books
      *       - in: query
      *         name: sort
      *         schema:
      *           type: string
      *           enum: [asc, desc]
-     *         description: Sort order for books
+     *         description: (Optional) Sort order for books by title
+     *         default: asc
      *       - in: query
      *         name: page
      *         schema:
      *           type: integer
      *           minimum: 1
-     *         description: Page number for pagination
+     *         description: (Optional) Page number for pagination
+     *         default: 1
      *       - in: query
      *         name: limit
      *         schema:
      *           type: integer
      *           minimum: 1
-     *         description: Number of books per page
+     *         description: (Optional) Number of books per page
+     *         default: 10
      *     responses:
      *       200:
      *         description: Successful response with paginated books
@@ -117,37 +124,14 @@ export class BooksController {
   }
 
   private async getBooksHandler(req: Request, res: Response): Promise<void> {
-    const search = req.query.search as string || undefined;
-
-    // validation check for sort
-    // if sort is empty, set it to "asc"
-    const sort = (req.query.sort as Sort) || "asc";
-    let validation : ValidationResult = validateSort(sort);
-    if (!validation.isValid) {
-      res.status(400).json({ error: validation.error });
-      return;
-    }
-
-    // validation check for pagination
-    // if page is empty, set it to 1
-    // if limit is empty, set it to 10
-    const pageQuery = req.query.page as string;
-    const limitQuery = req.query.limit as string;  
-    const page = pageQuery ? parseInt(pageQuery, 10) : 1;
-    const limit = limitQuery ? parseInt(limitQuery, 10) : 10;
-    validation = validatePagination(page, limit);
-    if (!validation.isValid) {
-      res.status(400).json({ error: validation.error });
-      return;
-    }
-
     try {
-      const books: PaginatedBooks = await this.booksService.getBooks({
-        search,
-        sort,
-        page, //TODO: unit test - NaN page error
-        limit
-      });
+      const validatedOptions = this.parseAndValidateOptions(req.query);
+      if (!validatedOptions.isValid) {
+        res.status(400).json({ error: validatedOptions.error });
+        return;
+      }
+
+      const books: PaginatedBooks = await this.booksService.getBooks(validatedOptions as GetBooksOptions);
       res.status(200).json(books);
     } catch (error) {
       console.error("Error fetching books:", error);
@@ -155,6 +139,43 @@ export class BooksController {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private parseAndValidateOptions(query: any): GetBooksOptions & { isValid: true } | ValidationResult {
+    const search = query.search as string || undefined;
+    const sort = query.sort as Sort || DEFAULT_SORT;
+    const page = query.page ? parseInt(query.page as string, 10) : DEFAULT_PAGE;
+    const limit = query.limit ? parseInt(query.limit as string, 10) : DEFAULT_LIMIT;
+
+    const sortValidation = this.validateSort(sort);
+    if (!sortValidation.isValid) {
+      return { isValid: false, error: sortValidation.error };
+    }
+
+    const paginationValidation = this.validatePagination(page, limit);
+    if (!paginationValidation.page.isValid) {
+      return { isValid: false, error: paginationValidation.page.error };
+    }
+    if (!paginationValidation.limit.isValid) {
+      return { isValid: false, error: paginationValidation.limit.error };
+    }
+
+    return { search, sort, page, limit, isValid: true };
+  }
+
+  private validateSort(sort: Sort): ValidationResult {
+    const sortValidation = validateSort(sort);
+    return sortValidation.isValid 
+      ? { isValid: true } 
+      : { isValid: false, error: sortValidation.error };
+  }
+
+  private validatePagination(page: number, limit: number): { page: ValidationResult, limit: ValidationResult } {
+    const pageValidation = validatePagination(page, limit);
+    return {
+      page: pageValidation.isValid ? { isValid: true } : { isValid: false, error: pageValidation.error },
+      limit: pageValidation.isValid ? { isValid: true } : { isValid: false, error: pageValidation.error }
+    };
+  }
   private async getBookByIdHandler(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     try {

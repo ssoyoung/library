@@ -38,11 +38,9 @@ This is a simple Book Library API built with Express.js. It allows users to mana
 ## Endpoints
 
 - `GET /` - Returns a welcome message.
-- `GET /api-docs` - Returns the API documentation.
-- Additional endpoints for managing books will be available through the [`BooksController`](command:_github.copilot.openSymbolFromReferences?%5B%22%22%2C%5B%7B%22uri%22%3A%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FUsers%2Fmihaela%2Fcode%2Flibrary-BE%2Fsrc%2Findex.ts%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22pos%22%3A%7B%22line%22%3A2%2C%22character%22%3A9%7D%7D%5D%2C%2221bd5de7-90a6-4aa3-b897-89ee31899a17%22%5D "Go to definition"). Please refer to the `/api-docs` endpoint to see the available routes and their specifications.
+- `GET /api-docs` - Access the API documentation via Swagger UI.
 
-
-## Test
+## Testing
 
 1. Run unit tests:
    ```sh
@@ -53,7 +51,7 @@ This is a simple Book Library API built with Express.js. It allows users to mana
    npm run test:integration
    ```
 
-## Lint
+## Linting
 
 1. Run lint:
    ```sh
@@ -67,3 +65,7 @@ This is a simple Book Library API built with Express.js. It allows users to mana
 ## License
 
 This project is licensed under the MIT License.
+
+## Module Documentation
+
+For detailed information on specific modules, refer to their respective `README.md` files located in the module directories (e.g., `src/books/README.md`).
